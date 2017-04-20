@@ -90,7 +90,7 @@ public class Utility {
         editor.putString("temp1",temp1);
         editor.putString("temp2",temp2);
         editor.putString("weather_desp",weatherDesp);
-        editor.putString("weather_time",weatherDesp);
+        editor.putString("weather_time",publishTime);
         editor.putString("current_date",sdf.format(new Date()));
         editor.commit();
     }

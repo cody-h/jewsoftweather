@@ -1,6 +1,9 @@
 package app.jewsoftweather.com.jewsoftweather.activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -68,9 +71,29 @@ public class ChooseAreaActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private InputStream is;
 
+
+    /**
+     * 是否从WeatherActivity中跳转出来
+     */
+    private boolean isFromWeatherActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean citySelected = prefs.getBoolean("city_selected",false);
+        //已经选择了城市并且不是从WeatherActivity 跳转过来，才会直接跳转到WeatherActivity
+        if(citySelected && !isFromWeatherActivity){
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
 
@@ -102,6 +125,12 @@ public class ChooseAreaActivity extends AppCompatActivity {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if(currentLevel == LEVEL_COUNTY ){
+                    String weatherCode = countyList.get(position).getWeatherCode();
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("weather_code",weatherCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -199,6 +228,10 @@ public class ChooseAreaActivity extends AppCompatActivity {
         } else if (currentLevel == LEVEL_CITY) {
             queryProvinces();
         } else {
+            if(isFromWeatherActivity){
+                Intent intent = new Intent(this, WeatherActivity.class);
+                startActivity(intent);
+            }
             finish();
         }
     }
