@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import app.jewsoftweather.com.jewsoftweather.R;
+import app.jewsoftweather.com.jewsoftweather.receiver.AutoUpdateReceiver;
 import app.jewsoftweather.com.jewsoftweather.util.HttpCallbackListener;
 import app.jewsoftweather.com.jewsoftweather.util.HttpUtil;
 import app.jewsoftweather.com.jewsoftweather.util.Utility;
@@ -108,7 +109,10 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         cityNameText.setVisibility(View.VISIBLE);
 
         String cityName = prefs.getString("city_name","");
-        System.out.println("--------------"+cityName);
+        System.out.println("--------------"+cityName+"---"+prefs.getString("weather_code",""));
+
+        Intent intent = new Intent(this, AutoUpdateReceiver.class);
+        startService(intent);
 
 
     }
